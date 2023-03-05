@@ -9,3 +9,90 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            Int     @id                       @default(autoincrement())
+  email         String  @unique
+  password      String  @db.VarChar(20)
+  role          Role    @default(CLIENT)
+
+  recovery      String  @db.Uuid
+
+  cart          Cart?
+  cartId        Int
+
+  favorites     Favorites[]
+
+  orders        Order[]
+}
+
+model Product {
+  SKU           Int       @id                   @default(autoincrement())
+  name          String    @db.VarChar(50)
+  description   String    @db.VarChar(150)
+  stock         Int
+  image         String
+  available     Boolean   @default(true)
+  price         BigInt
+
+  cart          ProductsOnCarts[]
+  favorites     Favorites[]
+  orders        ProductsOnOrders[]
+}
+
+model Cart {
+  id            Int       @id                     @default(autoincrement())
+
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int       @unique
+
+  products      ProductsOnCarts[]
+}
+
+model ProductsOnCarts {
+  cart          Cart      @relation(fields: [cartId], references: [id])
+  cartId        Int
+
+  product       Product   @relation(fields: [productId], references: [SKU])
+  productId     Int
+
+  @@id([cartId, productId])
+}
+
+model Order {
+  id            Int       @id   @default(autoincrement())
+  orderedAt     DateTime  @default(now())
+  total         BigInt
+
+  products      ProductsOnOrders[]
+  
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+}
+
+model ProductsOnOrders {
+  order         Order     @relation(fields: [orderId], references: [id])
+  orderId       Int
+
+  product       Product   @relation(fields: [productId], references: [SKU])
+  productId     Int
+
+  quantity      Int
+
+  @@id([orderId, productId])
+}
+
+model Favorites {
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+
+  product       Product   @relation(fields: [productId], references: [SKU])
+  productId     Int
+
+  @@id([userId, productId])
+}
+
+enum Role {
+  MANAGER
+  CLIENT
+}
