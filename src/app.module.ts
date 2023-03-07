@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserService } from './user/user.service';
-import { ProductService } from './product/product.service';
-import { ProdcutService } from './prodcut/prodcut.service';
-import { UserController } from './user/user.controller';
-import { UsersService } from './users/users.service';
-import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { ProductController } from './product/product.controller';
+import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService, UsersService, ProdcutService, ProductService],
+    providers: [AppService],
+    imports: [
+        AuthModule,
+        UserModule,
+        ProductModule,
+        ConfigModule.forRoot({ isGlobal: true }),
+    ],
+    controllers: [AppController],
 })
 export class AppModule {}
