@@ -2,30 +2,20 @@ import { IPagination } from '@common/interfaces/pagination';
 import { PrismaService } from '@config/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma, Product } from '@prisma/client';
+import { ProductRepository } from './product.repository';
 
 @Injectable()
 export class ProductService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private productRepository: ProductRepository) {}
 
-    async product(
-        ProductWhereUniqueInput: Prisma.UserWhereUniqueInput,
-    ): 
+    async createProduct(data: Prisma.ProductCreateInput) {
+        return this.productRepository.createProduct(data);
+    }
 
-    async products(
-        params: IPagination & {
-            cursor?: Prisma.ProductWhereUniqueInput;
-            where?: Prisma.ProductWhereInput;
-            orderBy?: Prisma.ProductOrderByWithRelationInput;
-        },
-    ): Promise<Product[]> {
-        const { page, limit, cursor, where, orderBy } = params;
-
-        return this.prisma.product.findMany({
-            skip: page * limit,
-            take: limit,
-            cursor,
-            where,
-            orderBy,
+    async updateProduct(sku: string, data: Prisma.ProductUpdateInput) {
+        return this.productRepository.updateProduct({
+            where: { SKU: +sku },
+            data,
         });
     }
 }
