@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { UserRepository } from 'src/user/user.repository';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { OrderRepository } from './order.repository';

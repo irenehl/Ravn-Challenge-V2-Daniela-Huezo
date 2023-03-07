@@ -19,7 +19,7 @@ export class OrderRepository {
         params: IPagination & {
             cursor?: Prisma.OrderWhereUniqueInput;
             where?: Prisma.OrderWhereInput;
-            orderBy?: Prisma.OrderOrderByWithRelationInput;
+            orderBy?: Prisma.UserOrderByWithAggregationInput;
         },
     ): Promise<Order[]> {
         const { page, limit, cursor, where, orderBy } = params;
