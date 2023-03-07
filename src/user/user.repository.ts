@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '@config/prisma.service';
 import { IPagination } from '@common/interfaces/pagination';
-import { env } from 'process';
 import bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
@@ -25,7 +24,7 @@ export class UserRepository {
         params: IPagination & {
             cursor?: Prisma.UserWhereUniqueInput;
             where?: Prisma.UserWhereInput;
-            orderBy?: Prisma.UserOrderByWithRelationInput;
+            orderBy?: Prisma.UserOrderByWithAggregationInput;
         },
     ): Promise<User[]> {
         const { page, limit, cursor, where, orderBy } = params;
