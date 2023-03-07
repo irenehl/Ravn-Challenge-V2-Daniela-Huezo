@@ -13,13 +13,13 @@ datasource db {
 model User {
   id            Int     @id                       @default(autoincrement())
   email         String  @unique
-  password      String  @db.VarChar(20)
+  password      String
   role          Role    @default(CLIENT)
 
-  recovery      String  @db.Uuid
+  recovery      String?  @db.Uuid
 
   cart          Cart?
-  cartId        Int
+  cartId        Int?
 
   favorites     Favorites[]
 
@@ -31,9 +31,10 @@ model Product {
   name          String    @db.VarChar(50)
   description   String    @db.VarChar(150)
   stock         Int
-  image         String
+  image         String?
   available     Boolean   @default(true)
-  price         BigInt
+  price         Int
+  category      String    @default("UNCATEGORIZED")
 
   cart          ProductsOnCarts[]
   favorites     Favorites[]
@@ -53,16 +54,16 @@ model ProductsOnCarts {
   cart          Cart      @relation(fields: [cartId], references: [id])
   cartId        Int
 
-  product       Product   @relation(fields: [productId], references: [SKU])
-  productId     Int
+  product       Product   @relation(fields: [productSKU], references: [SKU])
+  productSKU     Int
 
-  @@id([cartId, productId])
+  @@id([cartId, productSKU])
 }
 
 model Order {
   id            Int       @id   @default(autoincrement())
   orderedAt     DateTime  @default(now())
-  total         BigInt
+  total         BigInt    @default(0)  
 
   products      ProductsOnOrders[]
   
@@ -74,22 +75,22 @@ model ProductsOnOrders {
   order         Order     @relation(fields: [orderId], references: [id])
   orderId       Int
 
-  product       Product   @relation(fields: [productId], references: [SKU])
-  productId     Int
+  product       Product   @relation(fields: [productSKU], references: [SKU])
+  productSKU     Int
 
   quantity      Int
 
-  @@id([orderId, productId])
+  @@id([orderId, productSKU])
 }
 
 model Favorites {
   user          User      @relation(fields: [userId], references: [id])
   userId        Int
 
-  product       Product   @relation(fields: [productId], references: [SKU])
-  productId     Int
+  product       Product   @relation(fields: [productSKU], references: [SKU])
+  productSKU     Int
 
-  @@id([userId, productId])
+  @@id([userId, productSKU])
 }
 
 enum Role {
