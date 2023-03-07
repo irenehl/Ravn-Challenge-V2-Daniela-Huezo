@@ -4,8 +4,8 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { ProductController } from './product/product.controller';
 import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
     providers: [AppService],
@@ -13,6 +13,7 @@ import { ProductModule } from './product/product.module';
         AuthModule,
         UserModule,
         ProductModule,
+        CartModule,
         ConfigModule.forRoot({ isGlobal: true }),
     ],
     controllers: [AppController],

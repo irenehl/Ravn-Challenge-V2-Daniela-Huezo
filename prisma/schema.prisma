@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -55,7 +56,9 @@ model ProductsOnCarts {
   cartId        Int
 
   product       Product   @relation(fields: [productSKU], references: [SKU])
-  productSKU     Int
+  productSKU    Int
+
+  quantity      Int
 
   @@id([cartId, productSKU])
 }
