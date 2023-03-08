@@ -9,6 +9,7 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Cart as CartDto } from '@prisma/client';
 import { Roles } from '@res/auth/decorators/role.decorator';
 import { JwtAuthGuard } from '@res/auth/guards/jwt-auth.guard';
@@ -19,6 +20,7 @@ import { CartExtendedDto } from './dtos/cart-extended.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('CLIENT')
+@ApiTags('Cart')
 @Controller('cart')
 export class CartController {
     constructor(private readonly cartService: CartService) {}
@@ -32,6 +34,7 @@ export class CartController {
     async addProduct(
         @Req() req,
         @Body() data: AddProductDto,
+        @Body() dto: AddProductDto,
     ): Promise<CartExtendedDto> {
         return this.cartService.addProduct(req.user.sub, data);
     }
@@ -40,6 +43,7 @@ export class CartController {
     async updateProduct(
         @Req() req,
         @Body() data: AddProductDto,
+        @Body() dto: AddProductDto,
     ): Promise<CartExtendedDto> {
         return this.cartService.updateProduct(req.user.sub, data);
     }

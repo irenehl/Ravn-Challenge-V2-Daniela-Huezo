@@ -9,15 +9,17 @@ import {
     Query,
     UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Product as ProductDto } from '@prisma/client';
 import { Roles } from '@res/auth/decorators/role.decorator';
 import { JwtAuthGuard } from '@res/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@res/auth/guards/role.guard';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductService } from './product.service';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('Product')
 @Controller('product')
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
@@ -38,7 +40,10 @@ export class ProductController {
     @Post('create')
     @Roles('MANAGER')
     @UseGuards(RolesGuard)
-    async create(@Body() data: CreateProductDto): Promise<ProductDto> {
+    async create(
+        @Body() data: CreateProductDto,
+        @Body() dto: CreateProductDto,
+    ): Promise<ProductDto> {
         return this.productService.createProduct(data);
     }
 
