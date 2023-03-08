@@ -2,6 +2,7 @@ import { IPagination } from '@common/interfaces/pagination';
 import { PrismaService } from '@config/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Order, Prisma } from '@prisma/client';
+import { OrderExtendedDto } from './dtos/order-extended.dto';
 
 @Injectable()
 export class OrderRepository {
@@ -9,9 +10,20 @@ export class OrderRepository {
 
     async order(
         orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
-    ): Promise<Order | null> {
+    ): Promise<OrderExtendedDto | null> {
         return this.prisma.order.findUnique({
             where: orderWhereUniqueInput,
+            select: {
+                id: true,
+                total: true,
+                orderedAt: true,
+                products: {
+                    select: {
+                        product: true,
+                        quantity: true,
+                    },
+                },
+            },
         });
     }
 
@@ -39,20 +51,24 @@ export class OrderRepository {
         });
     }
 
-    async updateOrder(params: {
-        where: Prisma.OrderWhereUniqueInput;
-        data: Prisma.OrderUpdateInput;
-    }): Promise<Order> {
-        const { where, data } = params;
-        return this.prisma.order.update({
-            data,
-            where,
+    async addProduct(orderId: number, productSKU: number, quantity: number) {
+        return this.prisma.productsOnOrders.create({
+            data: {
+                orderId,
+                productSKU,
+                quantity,
+            },
         });
     }
 
-    async deleteOrder(where: Prisma.OrderWhereUniqueInput): Promise<Order> {
-        return this.prisma.order.delete({
+    async updateOrder(params: {
+        where: Prisma.OrderWhereUniqueInput;
+        data: Prisma.OrderUpdateInput;
+    }) {
+        const { where, data } = params;
+        return this.prisma.order.update({
             where,
+            data,
         });
     }
 }

@@ -52,15 +52,11 @@ export class ProductController {
         return this.productService.updateProduct(sku, data);
     }
 
-    // TODO
-    @Patch('disable/:sku')
+    @Patch('toggle/:sku')
     @Roles('MANAGER')
     @UseGuards(RolesGuard)
-    async disable(
-        @Param('sku') sku: string,
-        @Body() data: UpdateProductDto,
-    ): Promise<ProductDto> {
-        return this.productService.updateProduct(sku, data);
+    async disable(@Param('sku') sku: string): Promise<ProductDto> {
+        return this.productService.toggleProduct(sku);
     }
 
     @Delete('delete/:sku')

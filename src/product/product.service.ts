@@ -12,11 +12,20 @@ export class ProductService {
     }
 
     async updateProduct(sku: string, data: Prisma.ProductUpdateInput) {
-        console.log(sku);
-
         return this.productRepository.updateProduct({
             where: { SKU: +sku },
             data,
+        });
+    }
+
+    async toggleProduct(sku: string) {
+        const product = await this.productRepository.product({ SKU: +sku });
+
+        return this.productRepository.updateProduct({
+            where: { SKU: +sku },
+            data: {
+                available: !product.available,
+            },
         });
     }
 
@@ -27,7 +36,7 @@ export class ProductService {
     async getOne(sku: string): Promise<Product | null> {
         const product = await this.productRepository.product({ SKU: +sku });
 
-        if (!product) throw new NotFoundException();
+        if (!product) throw new NotFoundException('Product not found');
 
         return product;
     }
