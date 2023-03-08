@@ -10,7 +10,6 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Cart as CartDto } from '@prisma/client';
 import { Roles } from '@res/auth/decorators/role.decorator';
 import { JwtAuthGuard } from '@res/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@res/auth/guards/role.guard';
