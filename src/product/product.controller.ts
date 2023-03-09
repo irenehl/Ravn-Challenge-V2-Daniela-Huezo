@@ -40,10 +40,7 @@ export class ProductController {
     @Post('create')
     @Roles('MANAGER')
     @UseGuards(RolesGuard)
-    async create(
-        @Body() data: CreateProductDto,
-        @Body() dto: CreateProductDto,
-    ): Promise<ProductDto> {
+    async create(@Body() data: CreateProductDto): Promise<ProductDto> {
         return this.productService.createProduct(data);
     }
 

@@ -33,7 +33,6 @@ export class CartController {
     async addProduct(
         @Req() req,
         @Body() data: AddProductDto,
-        @Body() dto: AddProductDto,
     ): Promise<CartExtendedDto> {
         return this.cartService.addProduct(req.user.sub, data);
     }
@@ -42,7 +41,6 @@ export class CartController {
     async updateProduct(
         @Req() req,
         @Body() data: AddProductDto,
-        @Body() dto: AddProductDto,
     ): Promise<CartExtendedDto> {
         return this.cartService.updateProduct(req.user.sub, data);
     }

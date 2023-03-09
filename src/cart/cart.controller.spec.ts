@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CartController } from './cart.controller';
+import { CartService } from './cart.service';
+import { CartRepository } from './cart.repository';
 import { ProductService } from '../product/product.service';
 import { ProductRepository } from '../product/product.repository';
 import { createMockContext, MockContext } from '@config/mock.context';
 import { PrismaService } from '@config/prisma.service';
-import { ProductController } from './product.controller';
-import { CartController } from '@res/cart/cart.controller';
 
-describe('ProducttController', () => {
-    let controller: ProductController;
+describe('CartController', () => {
+    let controller: CartController;
     let mockCtx: MockContext;
 
     jest.mock('@config/prisma.service', () => ({
@@ -17,7 +18,13 @@ describe('ProducttController', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [CartController],
-            providers: [ProductService, ProductRepository, PrismaService],
+            providers: [
+                CartService,
+                CartRepository,
+                ProductService,
+                ProductRepository,
+                PrismaService,
+            ],
         }).compile();
 
         controller = module.get<CartController>(CartController);
@@ -35,11 +42,11 @@ describe('ProducttController', () => {
     });
 
     describe('Get', () => {
-        it('should return a product when sku is found', async () => {
+        it('should return user cart when id is found', async () => {
             // Arrange
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            mockCtx.prisma.product.findUnique = jest.fn().mockReturnValueOnce({
+            mockCtx.prisma.cart.findUnique = jest.fn().mockReturnValueOnce({
                 products: [
                     {
                         product: {
@@ -51,7 +58,7 @@ describe('ProducttController', () => {
             });
 
             // Act
-            const result = await controller.findOne(String(1));
+            const result = await controller.getCart({ user: { sub: 1 } });
 
             // Assert
             expect(result).toHaveProperty('products');
@@ -61,10 +68,12 @@ describe('ProducttController', () => {
     describe('Post', () => {
         describe('Add product', () => {
             it('should create a product', async () => {
+                // cart find unique, product find unique, products on carts create
+
                 // Arrange
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                mockCtx.prisma.product.findUnique = jest
+                mockCtx.prisma.cart.findUnique = jest
                     .fn()
                     .mockReturnValueOnce({
                         id: 1,
@@ -110,21 +119,15 @@ describe('ProducttController', () => {
                         },
                     });
 
-                const product = {
-                    name: 'lorem',
-                    description: 'lorem ipsum',
-                    stock: 3,
-                    image: '',
-                    available: true,
-                    price: 3400,
-                    category: 'medicine',
-                };
-
                 // Act
-                const result = await controller.create(product);
+                const result = await controller.addProduct(
+                    { user: { sub: 1 } },
+                    { productId: 1, quantity: 1 },
+                );
 
                 // Assert
-                expect(result).toHaveProperty('product');
+                expect(result).toHaveProperty('products');
+                expect(result.products).toHaveLength(1);
             });
         });
     });

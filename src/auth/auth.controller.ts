@@ -16,16 +16,12 @@ export class AuthController {
     @Post('login')
     async login(
         @Request() req: LoginDto & { user: UserDto },
-        @Body() dto: LoginDto,
     ): Promise<TokenDto> {
         return this.authService.login(req.user);
     }
 
     @Post('register')
-    async register(
-        @Body() req: RegisterDto,
-        @Body() dto: RegisterDto,
-    ): Promise<UserDto> {
+    async register(@Body() req: RegisterDto): Promise<UserDto> {
         return this.authService.register(req);
     }
 }

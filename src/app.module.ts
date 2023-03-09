@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
     providers: [AppService],
@@ -17,6 +18,7 @@ import { OrderModule } from './order/order.module';
         CartModule,
         OrderModule,
         ConfigModule.forRoot({ isGlobal: true }),
+        FavoritesModule,
     ],
     controllers: [AppController],
 })
